@@ -12,9 +12,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDKs (Compat - NO Storage) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <style>
     .admin-wrapper {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 40px auto;
       padding: 0 5%;
     }
@@ -54,6 +57,7 @@
       display: grid;
       grid-template-columns: 1fr 2fr;
       gap: 30px;
+      margin-bottom: 40px;
     }
     @media (max-width: 992px) {
       .admin-grid {
@@ -189,15 +193,11 @@
     <div class="admin-stats">
       <div class="admin-card-box">
         <h3 id="statTotalProducts">0</h3>
-        <p>Total Products</p>
-      </div>
-      <div class="admin-card-box">
-        <h3 id="statCategories">4</h3>
-        <p>Categories</p>
+        <p>Total Products (Firebase)</p>
       </div>
       <div class="admin-card-box">
         <h3 id="statQuotes">0</h3>
-        <p>Saved Quote Items</p>
+        <p>Client Quote Requests</p>
       </div>
     </div>
 
@@ -207,18 +207,18 @@
       <div class="admin-form-box">
         <h3 id="formTitle"><i class="fas fa-plus-circle"></i> Add New Product</h3>
         <form id="productForm" class="contact-form">
-          <input type="hidden" id="editProductId">
+          <input type="hidden" id="editFirebaseId">
           <div class="form-group">
             <label for="prodName">Product Name</label>
             <input type="text" id="prodName" required placeholder="e.g. Hikvision 4K Camera">
           </div>
           <div class="form-group">
-            <label for="prodCategory">Category</label>
-            <select id="prodCategory">
-              <option value="Surveillance">Surveillance</option>
-              <option value="Computers">Computers</option>
-              <option value="Security">Security</option>
-              <option value="Electronics">Electronics</option>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label for="prodCategory" style="margin:0;">Category</label>
+              <button type="button" onclick="openCategoryManager()" style="background: none; border: none; color: var(--accent-gold); font-size: 0.8rem; cursor: pointer; text-decoration: underline;">Manage Categories</button>
+            </div>
+            <select id="prodCategory" required>
+              <!-- Dynamically populated -->
             </select>
           </div>
           <div class="form-group">
@@ -226,8 +226,16 @@
             <input type="number" id="prodPrice" required placeholder="1490">
           </div>
           <div class="form-group">
-            <label for="prodImage">Image URL (Unsplash)</label>
-            <input type="url" id="prodImage" required placeholder="https://images.unsplash.com/...">
+            <label for="prodImage">Image URL or Upload</label>
+            <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+              <input type="url" id="prodImage" required placeholder="https://images.unsplash.com/... or base64" style="flex: 1;">
+              <input type="file" id="imageUploadInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImageUpload(event)">
+              <button type="button" class="btn-outline" onclick="document.getElementById('imageUploadInput').click()" style="white-space: nowrap; padding: 0 14px; font-size: 0.85rem;"><i class="fas fa-camera"></i> Upload Image</button>
+            </div>
+            <div id="imageSizeWarning" style="font-size: 0.8rem; color: #ffb700; display: none;"></div>
+            <div id="imagePreviewContainer" style="margin-top: 5px; display: none;">
+              <img id="imagePreview" src="" alt="Preview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid var(--accent-gold);">
+            </div>
           </div>
           <div class="form-group">
             <label for="prodDesc">Description</label>
@@ -242,7 +250,7 @@
 
       <!-- Product List Table -->
       <div class="admin-table-box">
-        <h3><i class="fas fa-boxes"></i> Product Inventory</h3>
+        <h3><i class="fas fa-boxes"></i> Product Inventory (Firebase RTDB)</h3>
         <div class="table-responsive">
           <table>
             <thead>
@@ -254,7 +262,6 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <th:head></th:head>
             <tbody id="adminProductTableBody">
               <!-- Dynamically injected -->
             </tbody>
@@ -262,11 +269,73 @@
         </div>
       </div>
     </div>
+
+    <!-- Client Quotes Section -->
+    <div class="admin-table-box" style="margin-top: 40px;">
+      <h3><i class="fas fa-file-invoice-dollar"></i> Incoming Client Quote Requests</h3>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name / Company</th>
+              <th>Phone</th>
+              <th>City</th>
+              <th>Service</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody id="adminQuotesTableBody">
+            <!-- Dynamically injected -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
+  <!-- Category Manager Modal -->
+  <div class="modal-overlay" id="categoryModal">
+    <div class="modal-container" style="max-width: 450px;">
+      <button class="modal-close" onclick="closeCategoryManager()"><i class="fas fa-times"></i></button>
+      <h3 class="modal-title" style="font-size: 1.3rem;"><i class="fas fa-tags"></i> Manage Categories</h3>
+      <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+        <input type="text" id="newCategoryInput" placeholder="New Category Name..." style="flex: 1; background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 10px; border-radius: 4px; color: var(--text-main);">
+        <button type="button" class="btn-primary" onclick="addNewCategory()" style="padding: 10px 16px;">+ Add</button>
+      </div>
+      <div id="categoryListContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto;">
+        <!-- Category list -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase & Admin Logic -->
   <script>
-    // Admin Password Protection
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNG9IDjSb6VPkBZ1eKCwqNrzuecPlAZdk",
+      authDomain: "digisur-7bd70.firebaseapp.com",
+      databaseURL: "https://digisur-7bd70-default-rtdb.firebaseio.com",
+      projectId: "digisur-7bd70",
+      storageBucket: "digisur-7bd70.firebasestorage.app",
+      messagingSenderId: "332929926714",
+      appId: "1:332929926714:web:5e923334b6804f5da25703",
+      measurementId: "G-9364K6GGRT"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const ADMIN_PASS = "MOUSMAN2026";
+    let cachedProducts = [];
+    let cachedCategories = [];
+
+    const defaultCategories = [
+      "Surveillance & CCTV",
+      "Security & Alarm",
+      "Computer Hardware",
+      "Electronics & Electrical",
+      "Smart Home",
+      "Installation & Maintenance"
+    ];
 
     document.addEventListener('DOMContentLoaded', () => {
       const isAuthed = sessionStorage.getItem('digisur_authed') === 'true';
@@ -281,7 +350,7 @@
           sessionStorage.setItem('digisur_authed', 'true');
           showDashboard();
         } else {
-          alert('Incorrect password');
+          alert('Incorrect password.');
         }
       });
 
@@ -296,104 +365,279 @@
     function showDashboard() {
       document.getElementById('loginOverlay').style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
-      loadAdminData();
+      initFirebaseListeners();
     }
 
-    function getProducts() {
-      return JSON.parse(localStorage.getItem('digisur_products')) || [];
+    const defaultProducts = [
+      { id: 1, name: "Hikvision 8MP Camera", category: "Surveillance & CCTV", price: 1490, image: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=600&q=80", description: "Ultra-HD 4K outdoor IP camera with night vision and smart motion detection." },
+      { id: 2, name: "Dahua PTZ Camera", category: "Surveillance & CCTV", price: 2850, image: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80", description: "32X Optical Zoom PTZ dome security camera with AI perimeter protection." },
+      { id: 3, name: "Hikvision NVR", category: "Surveillance & CCTV", price: 3200, image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80", description: "16-Channel 4K Network Video Recorder with pre-installed 2TB surveillance HDD." },
+      { id: 4, name: "HP ProBook i7 Laptop", category: "Computer Hardware", price: 9900, image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80", description: "Intel Core i7, 16GB RAM, 512GB SSD enterprise laptop for secure executive workflows." },
+      { id: 5, name: "Dell Latitude i5 Laptop", category: "Computer Hardware", price: 7400, image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80", description: "Intel Core i5, 8GB RAM, 256GB SSD robust business laptop." },
+      { id: 6, name: "Lenovo ThinkPad", category: "Computer Hardware", price: 12500, image: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=600&q=80", description: "ThinkPad legendary durability, Intel i7, 32GB RAM, fingerprint reader." },
+      { id: 7, name: "Dell Server", category: "Computer Hardware", price: 24900, image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80", description: "PowerEdge rack server dual Xeon processors for enterprise data center hosting." },
+      { id: 8, name: "Alarm Kit AJAX", category: "Security & Alarm", price: 4900, image: "https://images.unsplash.com/photo-1557324232-b8917d3c3d6f?auto=format&fit=crop&w=600&q=80", description: "Wireless professional security system with hub, motion detectors, and siren." },
+      { id: 9, name: "Fire Detector", category: "Security & Alarm", price: 890, image: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=600&q=80", description: "Photoelectric smoke and heat fire safety sensor with wireless alert transmitter." },
+      { id: 10, name: "Biometric ZKTeco", category: "Security & Alarm", price: 3400, image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80", description: "Access control terminal with fingerprint, RFID card, and facial recognition." },
+      { id: 11, name: "PoE Switch", category: "Electronics & Electrical", price: 1850, image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80", description: "8-Port Gigabit PoE+ switch for reliable camera and IP phone power distribution." },
+      { id: 12, name: "UPS 3KVA", category: "Electronics & Electrical", price: 5200, image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80", description: "Online double-conversion uninterruptible power supply for servers and CCTV." }
+    ];
+
+    function initFirebaseListeners() {
+      // Listen to Categories
+      db.ref('categories').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (!val) {
+          db.ref('categories').set(defaultCategories);
+          cachedCategories = defaultCategories;
+        } else {
+          cachedCategories = Object.values(val);
+        }
+        populateCategorySelects();
+      });
+
+      // Listen to Products
+      db.ref('products').on('value', (snapshot) => {
+        const val = snapshot.val();
+        const tbody = document.getElementById('adminProductTableBody');
+        
+        if (!val) {
+          db.ref('products').set(defaultProducts);
+          return;
+        }
+
+        cachedProducts = Object.keys(val).map(key => ({
+          firebaseId: key,
+          ...val[key]
+        }));
+
+        document.getElementById('statTotalProducts').textContent = cachedProducts.length;
+
+        tbody.innerHTML = cachedProducts.map(p => `
+          <tr>
+            <td><img src="${p.image}" alt="${p.name}"></td>
+            <td><strong>${p.name}</strong></td>
+            <td>${p.category}</td>
+            <td style="color: var(--accent-gold); font-weight: 700;">${Number(p.price).toLocaleString()} DH</td>
+            <td>
+              <div class="action-btns">
+                <button class="btn-edit" onclick="editProduct('${p.firebaseId}')"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="deleteProduct('${p.firebaseId}')"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      });
+
+      // Listen to Quotes
+      db.ref('quotes').on('value', (snapshot) => {
+        const val = snapshot.val();
+        const tbody = document.getElementById('adminQuotesTableBody');
+        if (!val) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No quote requests received yet.</td></tr>`;
+          document.getElementById('statQuotes').textContent = '0';
+          return;
+        }
+
+        const quotesArr = Object.keys(val).map(key => ({
+          id: key,
+          ...val[key]
+        })).sort((a, b) => b.timestamp - a.timestamp);
+
+        document.getElementById('statQuotes').textContent = quotesArr.length;
+
+        tbody.innerHTML = quotesArr.map(q => {
+          const dateStr = q.timestamp ? new Date(q.timestamp).toLocaleString() : 'N/A';
+          return `
+            <tr>
+              <td>${dateStr}</td>
+              <td><strong>${q.name}</strong></td>
+              <td><a href="tel:${q.phone}" style="color: var(--accent-gold);">${q.phone}</a></td>
+              <td>${q.city}</td>
+              <td><span style="background: rgba(212,175,0,0.1); color: var(--accent-gold); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${q.service}</span></td>
+              <td>${q.message}</td>
+            </tr>
+          `;
+        }).join('');
+      });
     }
 
-    function saveProducts(products) {
-      localStorage.setItem('digisur_products', JSON.stringify(products));
-    }
-
-    function loadAdminData() {
-      const products = getProducts();
-      const quotes = JSON.parse(localStorage.getItem('digisur_quote')) || [];
-
-      document.getElementById('statTotalProducts').textContent = products.length;
-      document.getElementById('statQuotes').textContent = quotes.length;
-
-      const tbody = document.getElementById('adminProductTableBody');
-      if (products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No products in inventory.</td></tr>`;
-        return;
+    function populateCategorySelects() {
+      const select = document.getElementById('prodCategory');
+      if (!select) return;
+      const currentVal = select.value;
+      select.innerHTML = cachedCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+      if (currentVal && cachedCategories.includes(currentVal)) {
+        select.value = currentVal;
       }
+    }
 
-      tbody.innerHTML = products.map(p => `
-        <tr>
-          <td><img src="${p.image}" alt="${p.name}"></td>
-          <td><strong>${p.name}</strong></td>
-          <td>${p.category}</td>
-          <td style="color: var(--accent-gold); font-weight: 700;">${p.price.toLocaleString()} DH</td>
-          <td>
-            <div class="action-btns">
-              <button class="btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
-              <button class="btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
-            </div>
-          </td>
-        </tr>
+    // Browser Image Compression (Max 800px width, JPEG 0.7 quality)
+    window.handleImageUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const max_width = 800;
+
+          if (width > max_width) {
+            height = Math.round((height * max_width) / width);
+            width = max_width;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Export base64 JPEG q=0.7
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          
+          // Calculate size in KB
+          const base64Len = dataUrl.length - dataUrl.indexOf(',');
+          const sizeInKB = Math.round((base64Len * 3/4) / 1024);
+
+          const warningEl = document.getElementById('imageSizeWarning');
+          if (sizeInKB > 500) {
+            warningEl.textContent = `⚠️ Compressed size is ${sizeInKB}KB (> 500KB). Consider a smaller source image.`;
+            warningEl.style.display = 'block';
+          } else {
+            warningEl.textContent = `✓ Compressed successfully (${sizeInKB}KB)`;
+            warningEl.style.display = 'block';
+          }
+
+          document.getElementById('prodImage').value = dataUrl;
+          const preview = document.getElementById('imagePreview');
+          preview.src = dataUrl;
+          document.getElementById('imagePreviewContainer').style.display = 'block';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // Category Manager
+    window.openCategoryManager = function() {
+      renderCategoryList();
+      document.getElementById('categoryModal').classList.add('active');
+    };
+
+    window.closeCategoryManager = function() {
+      document.getElementById('categoryModal').classList.remove('active');
+    };
+
+    function renderCategoryList() {
+      const container = document.getElementById('categoryListContainer');
+      container.innerHTML = cachedCategories.map((cat, index) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-primary); padding: 10px 14px; border-radius: 4px; border: 1px solid var(--border-subtle);">
+          <span>${cat}</span>
+          <button type="button" onclick="deleteCategory('${cat}')" style="background: none; border: none; color: #ff4d4d; cursor: pointer;"><i class="fas fa-times"></i></button>
+        </div>
       `).join('');
     }
 
+    window.addNewCategory = function() {
+      const input = document.getElementById('newCategoryInput');
+      const newCat = input.value.trim();
+      if (!newCat) return;
+      if (cachedCategories.includes(newCat)) {
+        alert('Category already exists!');
+        return;
+      }
+
+      cachedCategories.push(newCat);
+      db.ref('categories').set(cachedCategories).then(() => {
+        input.value = '';
+        renderCategoryList();
+        populateCategorySelects();
+        alert('Category added successfully!');
+      });
+    };
+
+    window.deleteCategory = function(catName) {
+      if (cachedCategories.length <= 1) {
+        alert('You must keep at least one category.');
+        return;
+      }
+      if (confirm(`Delete category "${catName}"?`)) {
+        cachedCategories = cachedCategories.filter(c => c !== catName);
+        db.ref('categories').set(cachedCategories).then(() => {
+          renderCategoryList();
+          populateCategorySelects();
+          alert('Category deleted.');
+        });
+      }
+    };
+
     function handleProductSubmit(e) {
       e.preventDefault();
-      const id = document.getElementById('editProductId').value;
+      const firebaseId = document.getElementById('editFirebaseId').value;
       const name = document.getElementById('prodName').value;
       const category = document.getElementById('prodCategory').value;
       const price = parseFloat(document.getElementById('prodPrice').value);
       const image = document.getElementById('prodImage').value;
       const description = document.getElementById('prodDesc').value;
+      const id = firebaseId ? cachedProducts.find(p => p.firebaseId === firebaseId)?.id || Date.now() : Date.now();
 
-      let products = getProducts();
+      const productData = { id, name, category, price, image, description };
 
-      if (id) {
-        // Edit
-        products = products.map(p => p.id == id ? { id: Number(id), name, category, price, image, description } : p);
-        alert('Product updated successfully!');
+      if (firebaseId) {
+        db.ref('products/' + firebaseId).set(productData)
+          .then(() => {
+            alert('Product updated successfully in Firebase!');
+            resetProductForm();
+          })
+          .catch(err => alert('Error updating product: ' + err.message));
       } else {
-        // Add new
-        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({ id: newId, name, category, price, image, description });
-        alert('Product added successfully!');
+        db.ref('products').push(productData)
+          .then(() => {
+            alert('Product added successfully to Firebase!');
+            resetProductForm();
+          })
+          .catch(err => alert('Error adding product: ' + err.message));
       }
-
-      saveProducts(products);
-      resetProductForm();
-      loadAdminData();
     }
 
-    window.editProduct = function(id) {
-      const products = getProducts();
-      const p = products.find(item => item.id == id);
+    window.editProduct = function(firebaseId) {
+      const p = cachedProducts.find(item => item.firebaseId === firebaseId);
       if (!p) return;
 
-      document.getElementById('editProductId').value = p.id;
+      document.getElementById('editFirebaseId').value = p.firebaseId;
       document.getElementById('prodName').value = p.name;
       document.getElementById('prodCategory').value = p.category;
       document.getElementById('prodPrice').value = p.price;
       document.getElementById('prodImage').value = p.image;
       document.getElementById('prodDesc').value = p.description;
 
-      document.getElementById('formTitle').innerHTML = `<i class="fas fa-edit"></i> Edit Product #${p.id}`;
+      const preview = document.getElementById('imagePreview');
+      preview.src = p.image;
+      document.getElementById('imagePreviewContainer').style.display = 'block';
+
+      document.getElementById('formTitle').innerHTML = `<i class="fas fa-edit"></i> Edit Product`;
       document.getElementById('saveProductBtn').textContent = 'Update Product';
       document.getElementById('cancelEditBtn').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    window.deleteProduct = function(id) {
-      if (confirm('Are you sure you want to delete this product?')) {
-        let products = getProducts();
-        products = products.filter(p => p.id != id);
-        saveProducts(products);
-        loadAdminData();
-        alert('Product deleted successfully.');
+    window.deleteProduct = function(firebaseId) {
+      if (confirm('Are you sure you want to delete this product from Firebase?')) {
+        db.ref('products/' + firebaseId).remove()
+          .then(() => alert('Product deleted successfully from Firebase.'))
+          .catch(err => alert('Error deleting product: ' + err.message));
       }
     }
 
     window.resetProductForm = function() {
       document.getElementById('productForm').reset();
-      document.getElementById('editProductId').value = '';
+      document.getElementById('editFirebaseId').value = '';
+      document.getElementById('imagePreviewContainer').style.display = 'none';
+      document.getElementById('imageSizeWarning').style.display = 'none';
       document.getElementById('formTitle').innerHTML = `<i class="fas fa-plus-circle"></i> Add New Product`;
       document.getElementById('saveProductBtn').textContent = 'Add Product';
       document.getElementById('cancelEditBtn').style.display = 'none';
