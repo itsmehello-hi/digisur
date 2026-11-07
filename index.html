@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiGiSUR | Engineered Security & Intelligent Technology Morocco</title>
+  <meta name="description" content="Import, Export, Supply, Installation of Computer Hardware, Electronics, Surveillance Cameras, and Security Alarm Systems in Agadir, Casablanca, Marrakech, Rabat, Tangier.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <a href="tel:+212621248191"><i class="fas fa-phone-alt"></i> +212 6 21 24 81 91</a>
+      <a href="mailto:contact@digisur.ma"><i class="fas fa-envelope"></i> contact@digisur.ma</a>
+      <span><i class="fas fa-map-marker-alt"></i> Casablanca, Morocco (Agadir • Casablanca • Marrakech • Rabat • Tangier)</span>
+    </div>
+    <div class="top-bar-right">
+      <div class="lang-buttons">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="fr">FR</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+      </div>
+      <div class="curr-buttons">
+        <button class="curr-btn active" data-curr="MAD">MAD</button>
+        <button class="curr-btn" data-curr="EUR">EUR</button>
+        <button class="curr-btn" data-curr="USD">USD</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fas fa-shield-alt logo-icon"></i>
+      <h1>DiGi<span>SUR</span></h1>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="active" data-i18n="nav_home">Home</a></li>
+      <li><a href="#solutions" data-i18n="nav_solutions">Solutions</a></li>
+      <li><a href="#products" data-i18n="nav_products">Products</a></li>
+      <li><a href="#projects" data-i18n="nav_projects">Projects</a></li>
+      <li><a href="#process" data-i18n="nav_process">Process</a></li>
+      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="quote-btn" id="openQuoteModalBtn"><i class="fas fa-file-invoice-dollar"></i> <span data-i18n="nav_quote">Quote</span> (<span id="quoteCount">0</span>)</button>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- 3. Hero Section -->
+  <header class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-star"></i> <span data-i18n="hero_badge">Premier Security & IT Infrastructure in Morocco</span>
+      </div>
+      <h1 data-i18n="hero_title">Engineered Security. <span>Intelligent Technology.</span></h1>
+      <p data-i18n="hero_subtitle">Import, supply, and installation of elite computer hardware, advanced electronics, enterprise surveillance cameras, and high-security alarm systems across Agadir, Casablanca, Marrakech, Rabat & Tangier.</p>
+      <div class="hero-buttons">
+        <a href="#products" class="btn-primary" data-i18n="hero_btn_explore">Explore Products</a>
+        <a href="#contact" class="btn-outline" data-i18n="hero_btn_consult">Request Consultation</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <h3>500+</h3>
+          <p data-i18n="stat_projects">Enterprise Projects</p>
+        </div>
+        <div class="stat-item">
+          <h3>16+</h3>
+          <p data-i18n="stat_years">Years Excellence</p>
+        </div>
+        <div class="stat-item">
+          <h3>24/7</h3>
+          <p data-i18n="stat_support">Expert Support</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 4. SOLUTIONS Section -->
+  <section id="solutions">
+    <div class="section-header">
+      <span class="section-subtitle" data-i18n="sol_subtitle">What We Offer</span>
+      <h2 class="section-title" data-i18n="sol_title">Enterprise Solutions & Engineering</h2>
+    </div>
+    <div class="solutions-grid">
+      <div class="solution-card">
+        <div class="solution-icon"><i class="fas fa-video"></i></div>
+        <h3 data-i18n="sol_1_title">Surveillance CCTV</h3>
+        <p data-i18n="sol_1_desc">Ultra-HD 4K/8K IP cameras, AI-powered facial recognition, thermal imaging, and high-capacity NVR recording systems.</p>
+        <a href="#contact" class="solution-link">Inquire Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="solution-card">
+        <div class="solution-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3 data-i18n="sol_2_title">Alarm & Access Control</h3>
+        <p data-i18n="sol_2_desc">Wireless smart alarm kits, biometric fingerprint readers, facial recognition turnstiles, and automated gate security.</p>
+        <a href="#contact" class="solution-link">Inquire Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="solution-card">
+        <div class="solution-icon"><i class="fas fa-server"></i></div>
+        <h3 data-i18n="sol_3_title">Computers & Servers</h3>
+        <p data-i18n="sol_3_desc">High-performance business laptops (HP, Dell, Lenovo), enterprise rack servers, workstations, and network switches.</p>
+        <a href="#contact" class="solution-link">Inquire Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="solution-card">
+        <div class="solution-icon"><i class="fas fa-microchip"></i></div>
+        <h3 data-i18n="sol_4_title">Electronics & Power</h3>
+        <p data-i18n="sol_4_desc">Industrial UPS power backup systems, voltage regulators, fire detection sensors, and structured cabling accessories.</p>
+        <a href="#contact" class="solution-link">Inquire Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="solution-card">
+        <div class="solution-icon"><i class="fas fa-home"></i></div>
+        <h3 data-i18n="sol_5_title">Smart Home Automation</h3>
+        <p data-i18n="sol_5_desc">Intelligent lighting, automated climate control, smart door locks, and integrated mobile app property management.</p>
+        <a href="#contact" class="solution-link">Inquire Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="solution-card">
+        <div class="solution-icon"><i class="fas fa-tools"></i></div>
+        <h3 data-i18n="sol_6_title">Professional Installation</h3>
+        <p data-i18n="sol_6_desc">Certified engineering installation, fiber optic splicing, system commissioning, maintenance, and 24/7 SLA contracts.</p>
+        <a href="#contact" class="solution-link">Inquire Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PRODUCTS Section -->
+  <section id="products" class="products-section">
+    <div class="section-header">
+      <span class="section-subtitle" data-i18n="prod_subtitle">Catalog</span>
+      <h2 class="section-title" data-i18n="prod_title">High-End Hardware & Security Inventory</h2>
+    </div>
+
+    <!-- Search, Filter, Sort Controls -->
+    <div class="products-controls">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="productSearch" placeholder="Search cameras, laptops, servers...">
+      </div>
+      <div class="filter-sort-group">
+        <select id="categoryFilter" class="filter-select">
+          <option value="all">All Categories</option>
+          <option value="Surveillance">Surveillance</option>
+          <option value="Computers">Computers</option>
+          <option value="Security">Security</option>
+          <option value="Electronics">Electronics</option>
+        </select>
+        <select id="sortSelect" class="sort-select">
+          <option value="default">Sort by: Featured</option>
+          <option value="low-high">Price: Low to High</option>
+          <option value="high-low">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Products Grid (rendered dynamically via JS from localStorage) -->
+    <div class="products-grid" id="productsGrid">
+      <!-- Dynamic Products injected here -->
+    </div>
+  </section>
+
+  <!-- 6. PROJECTS Section -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-subtitle" data-i18n="proj_subtitle">Portfolio</span>
+      <h2 class="section-title" data-i18n="proj_title">Landmark Moroccan Installations</h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" alt="Hotel Agadir">
+        <div class="project-overlay">
+          <span>Casablanca, Morocco</span>
+          <h3 data-i18n="proj_1_title">Luxury Beach Resort</h3>
+          <p data-i18n="proj_1_desc">Full deployment of 240+ 4K IP Surveillance Cameras, fiber backbone, and access control.</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Bank Casablanca">
+        <div class="project-overlay">
+          <span>Casablanca Finance City</span>
+          <h3 data-i18n="proj_2_title">Regional Bank HQ</h3>
+          <p data-i18n="proj_2_desc">High-security biometric access systems, enterprise Dell servers, and redundant fire alarms.</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Villa Marrakech">
+        <div class="project-overlay">
+          <span>Marrakech Palmeraie</span>
+          <h3 data-i18n="proj_3_title">Palatial Estate Automation</h3>
+          <p data-i18n="proj_3_desc">Smart home integration, perimeter thermal cameras, and AJAX wireless intrusion alarms.</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="Factory Tangier">
+        <div class="project-overlay">
+          <span>Tangier Med Zone</span>
+          <h3 data-i18n="proj_4_title">Industrial Manufacturing Plant</h3>
+          <p data-i18n="proj_4_desc">Industrial networking, high-capacity UPS power stations, and automated gate security.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. PROCESS Section -->
+  <section id="process" class="process-section">
+    <div class="section-header">
+      <span class="section-subtitle" data-i18n="proc_subtitle">How We Work</span>
+      <h2 class="section-title" data-i18n="proc_title">Our 4-Step Engineering Protocol</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-card">
+        <div class="process-step-num">01</div>
+        <div class="process-icon"><i class="fas fa-clipboard-check"></i></div>
+        <h3 data-i18n="proc_1_title">Audit & Quote</h3>
+        <p data-i18n="proc_1_desc">On-site technical evaluation, blueprint analysis, and transparent customized quotation.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-step-num">02</div>
+        <div class="process-icon"><i class="fas fa-box-open"></i></div>
+        <h3 data-i18n="proc_2_title">Supply & Import</h3>
+        <p data-i18n="proc_2_desc">Sourcing genuine tier-1 global hardware brands with official manufacturer warranties.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-step-num">03</div>
+        <div class="process-icon"><i class="fas fa-tools"></i></div>
+        <h3 data-i18n="proc_3_title">Expert Installation</h3>
+        <p data-i18n="proc_3_desc">Certified technicians deploy cabling, mounting, network configuration, and testing.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-step-num">04</div>
+        <div class="process-icon"><i class="fas fa-graduation-cap"></i></div>
+        <h3 data-i18n="proc_4_title">Training & Support</h3>
+        <p data-i18n="proc_4_desc">Client operational handover, staff software training, and 24/7 SLA maintenance.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CONTACT Section -->
+  <section id="contact">
+    <div class="section-header">
+      <span class="section-subtitle" data-i18n="cont_subtitle">Get In Touch</span>
+      <h2 class="section-title" data-i18n="cont_title">Request a Custom Engineering Quote</h2>
+    </div>
+    <div class="contact-container">
+      <div class="contact-info">
+        <h3 data-i18n="cont_info_title">Let's Secure Your Enterprise</h3>
+        <p data-i18n="cont_info_desc">Our engineering consultants across Agadir, Casablanca, Marrakech, Rabat, and Tangier are ready to design your optimal technology infrastructure.</p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <h4 data-i18n="cont_hq">Headquarters</h4>
+              <span>Hay Mohammadi, Casablanca, Morocco</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone-alt"></i>
+            <div>
+              <h4 data-i18n="cont_phone">Phone & WhatsApp</h4>
+              <span>+212 621 24 81 91 / +212 621 24 81 91</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <h4 data-i18n="cont_email">Email</h4>
+              <span>contact@digisur.ma / sales@digisur.ma</span>
+            </div>
+          </div>
+        </div>
+        <a href="https://wa.me/212621248191?text=Hello%20DiGiSUR,%20I%20would%20like%20to%20discuss%20a%20security%20project." target="_blank" class="btn-primary" style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: #FFF; box-shadow: 0 4px 15px rgba(37,211,102,0.3);">
+          <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> <span data-i18n="cont_wa_btn">Chat on WhatsApp</span>
+        </a>
+      </div>
+
+      <form class="contact-form" id="quoteRequestForm">
+        <div class="form-group">
+          <label for="clientName" data-i18n="form_name">Full Name / Company</label>
+          <input type="text" id="clientName" required placeholder="e.g. Hassan Alami (Hotel Manager)">
+        </div>
+        <div class="form-group">
+          <label for="clientPhone" data-i18n="form_phone">Phone Number</label>
+          <input type="tel" id="clientPhone" required placeholder="+212 600 00 00 00">
+        </div>
+        <div class="form-group">
+          <label for="clientCity" data-i18n="form_city">City</label>
+          <select id="clientCity">
+            <option value="Agadir">Agadir</option>
+            <option value="Casablanca">Casablanca</option>
+            <option value="Marrakech">Marrakech</option>
+            <option value="Rabat">Rabat</option>
+            <option value="Tangier">Tangier</option>
+            <option value="Other">Other City in Morocco</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="clientService" data-i18n="form_service">Service / Solution</label>
+          <select id="clientService">
+            <option value="Surveillance CCTV">Surveillance CCTV</option>
+            <option value="Alarm & Access Control">Alarm & Access Control</option>
+            <option value="Computers & Servers">Computers & Servers</option>
+            <option value="Electronics & Power">Electronics & Power</option>
+            <option value="Smart Home">Smart Home</option>
+            <option value="Full Installation">Full Installation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="clientMessage" data-i18n="form_msg">Project Details & Requirements</label>
+          <textarea id="clientMessage" required placeholder="Describe your site size, camera count, server specs..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="form_submit">Submit Quote Request</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="nav-brand" style="margin-bottom: 15px;">
+          <i class="fas fa-shield-alt logo-icon"></i>
+          <h1>DiGi<span>SUR</span></h1>
+        </div>
+        <p data-i18n="footer_desc">Morocco's premier luxury technology and security integrator. Elite hardware, certified installation, and uncompromised protection.</p>
+        <p><a href="admin.html" style="color: var(--accent-gold); font-size: 0.85rem; text-decoration: underline;"><i class="fas fa-lock"></i> Admin Portal</a></p>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer_quick">Quick Links</h3>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#solutions">Solutions</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer_hubs">Morocco Hubs</h3>
+        <ul>
+          <li><a href="#contact">Agadir (HQ)</a></li>
+          <li><a href="#contact">Casablanca</a></li>
+          <li><a href="#contact">Marrakech</a></li>
+          <li><a href="#contact">Rabat</a></li>
+          <li><a href="#contact">Tangier</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer_brands">Partner Brands</h3>
+        <p>Hikvision, Dahua, HP, Dell, Lenovo, AJAX, ZKTeco, Cisco, APC.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 DiGiSUR Morocco. All Rights Reserved. Engineered for Excellence.</p>
+      <p>MOUSSA MOUSMAN</p>
+    </div>
+  </footer>
+
+  <!-- 9. Floating WhatsApp Button -->
+  <a href="https://wa.me/212621248191?text=Hello%20DiGiSUR,%20I%20need%20assistance." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- Quote Modal / Cart Drawer -->
+  <div class="modal-overlay" id="quoteModal">
+    <div class="modal-container">
+      <button class="modal-close" id="closeQuoteModal"><i class="fas fa-times"></i></button>
+      <h3 class="modal-title"><i class="fas fa-file-invoice-dollar"></i> Your Selected Quote Items</h3>
+      <div class="quote-items-list" id="quoteItemsList">
+        <!-- Quote items injected here -->
+      </div>
+      <div class="quote-total">
+        <span>Estimated Total:</span>
+        <span id="quoteModalTotal">0 DH</span>
+      </div>
+      <div style="display: flex; gap: 15px;">
+        <button id="submitQuoteOrderBtn" class="btn-primary" style="flex: 1;"><i class="fab fa-whatsapp"></i> Send Quote via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript -->
+  <script src="main.js"></script>
+</body>
+</html>
